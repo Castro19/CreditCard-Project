@@ -9,7 +9,7 @@ Web application, created with Python Flask, MySQL, JavaScript, HTML, and CSS, of
 ## How It Works
 ### User Selection
 Upon launching the application, users are prompted to select a profile from a MySQL database. This profile selection sets the stage for personalized interaction with the credit card interface.
-![User Interface](https://media.giphy.com/media/s7qxKOIjDuEAaZIiuD/giphy.gif)
+![User Interface](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZnA4bTE5dmV5amNqbXJ1NnEycWRqYWFibmFmbXI4OWI1dmlicno5dyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/sTpO9wIPllWwLWZ6cE/giphy.gif)
 
 ### Credit Card Interface
 Once a profile is chosen, the Credit Card Interface appears. This interface is where the credit card information is placed. It accurately represents real-life credit card functionalities.
