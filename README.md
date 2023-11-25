@@ -59,3 +59,14 @@ class Config:
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://[username]:[password]@localhost/credit_card_simulator'
 
 
+### Features I will implement
+1. More Credit Card Functionalities:
+    AUTH Cleared
+    Refunds
+    Payment Cancelled
+    ...
+2. API Integration to Summarize how each transaction might affect the credit score
+
+3. A more normalized structure for my database system including relational tables Receipts & ReceiptItems for extra practice
+(Look at SQL/NormalizedDB.png)
+

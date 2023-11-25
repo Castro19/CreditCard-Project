@@ -27,4 +27,4 @@
 -- SELECT * FROM Users;
 -- SELECT * FROM CreditCards;
 -- SELECT * FROM Item;
--- SELECT * FROM Transactions;
+SELECT * FROM Transactions;
