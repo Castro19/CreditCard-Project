@@ -3,7 +3,6 @@ from app import app, db
 from flask import render_template, request, jsonify
 from .models import Users, CreditCard, Item, Transaction
 import requests
-from openai import OpenAI
 from sqlalchemy import inspect
 import decimal
 from datetime import datetime
@@ -13,7 +12,8 @@ from datetime import datetime
 @app.route('/')
 def home():
     return render_template('index.html')
-    
+
+# Get the Users from the DataBase
 @app.route('/get-users')
 def get_users():
     users = Users.query.all()
@@ -28,6 +28,7 @@ def get_users():
     
     return jsonify(users_data)
 
+# Get the Credit Score from the User
 @app.route('/get-credit-score/<int:user_id>')
 def get_credit_score(user_id):
     print(f"Fetching credit score for user ID: {user_id}")
@@ -38,7 +39,8 @@ def get_credit_score(user_id):
     else:
         print("User not found")
         return jsonify({'error': 'User not found'}), 404
-    
+
+
 @app.route('/get-credit-cards/<int:user_id>')
 def get_credit_cards(user_id):
     credit_cards = CreditCard.query.filter_by(user_id=user_id).all()

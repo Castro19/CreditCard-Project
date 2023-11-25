@@ -13,6 +13,7 @@ app = Flask(__name__, static_folder="../static", template_folder="../templates")
 app.config.from_object(Config)
 db = SQLAlchemy(app)
 
+# Reset the Table DataBase 
 @app.route('/reset_database')
 def reset_database():
     # Call the function that executes your MySQL script
@@ -24,6 +25,7 @@ def reset_database():
         print("FAIL")
         return f"An error occurred: {e}"
 
+# Add new Credit Cards with Reset values
 def run_mysql_script():
     with db.engine.connect() as connection:
         trans = connection.begin()

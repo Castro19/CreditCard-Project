@@ -1,0 +1,30 @@
+-- INSERT INTO Users (name, age, current_credit_score) VALUES ('Jim', 18, 600);
+-- INSERT INTO Users (name, age, current_credit_score) VALUES ('Maria', 25, 800);
+-- INSERT INTO Users (name, age, current_credit_score) VALUES ('Thomas', 55, 840);
+-- INSERT INTO Users (name, age, current_credit_score) VALUES ('Jennifer', 32, 700);
+
+-- Thomas's credit cards (Top 3 credit cards)
+-- INSERT INTO CreditCards (user_id, card_number, credit_limit, balance) VALUES (3, RAND()*10000000000000000, 50000, 0);
+-- INSERT INTO CreditCards (user_id, card_number, credit_limit, balance) VALUES (3, RAND()*10000000000000000, 15000, 0);
+-- INSERT INTO CreditCards (user_id, card_number, credit_limit, balance) VALUES (3, RAND()*10000000000000000, 5000, 0);
+
+-- -- Maria's credit cards (Top 2 credit cards)
+-- INSERT INTO CreditCards (user_id, card_number, credit_limit, balance) VALUES (2, RAND()*10000000000000000, 50000, 0);
+-- INSERT INTO CreditCards (user_id, card_number, credit_limit, balance) VALUES (2, RAND()*10000000000000000, 15000, 0);
+
+-- -- Jennifer's credit cards (2nd best and 3rd best credit card)
+-- INSERT INTO CreditCards (user_id, card_number, credit_limit, balance) VALUES (4, RAND()*10000000000000000, 15000, 0);
+-- INSERT INTO CreditCards (user_id, card_number, credit_limit, balance) VALUES (4, RAND()*10000000000000000, 5000, 0);
+
+-- -- Jim's credit card (Worst credit card)
+-- INSERT INTO CreditCards (user_id, card_number, credit_limit, balance) VALUES (1, RAND()*10000000000000000, 1000, 0);
+
+-- INSERT INTO Item(name, price) VALUES ('FlatScreen TV', 1500.00);
+-- INSERT INTO Item(name, price) VALUES ('Electric Car', 50000.00);
+-- INSERT INTO Item(name, price) VALUES ('Laptop', 1000.00);
+-- INSERT INTO Item(name, price) VALUES ('T-Shirt', 10.00);
+
+-- SELECT * FROM Users;
+-- SELECT * FROM CreditCards;
+-- SELECT * FROM Item;
+-- SELECT * FROM Transactions;

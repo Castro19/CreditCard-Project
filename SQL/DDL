@@ -1,0 +1,41 @@
+USE credit_db;
+
+-- SHOW TABLES;
+
+-- CREATE TABLE Users (
+--     user_id INT AUTO_INCREMENT PRIMARY KEY,
+--     name VARCHAR(255) NOT NULL,
+--     age INT,
+--     current_credit_score INT
+-- );
+
+-- CREATE TABLE CreditCards (
+--     card_id INT AUTO_INCREMENT PRIMARY KEY,
+--     user_id INT,
+--     card_number VARCHAR(19),
+--     credit_limit DECIMAL(10, 2),
+--     balance DECIMAL(10, 2),
+--     available_credit DECIMAL(10, 2),
+--     FOREIGN KEY (user_id) REFERENCES Users(user_id)
+-- );
+
+-- CREATE TABLE Item (
+--     item_id INT AUTO_INCREMENT PRIMARY KEY,
+--     name VARCHAR(255),
+--     price DECIMAL(10, 2)
+-- );
+
+
+-- CREATE TABLE Transactions (
+--     transaction_id INT AUTO_INCREMENT PRIMARY KEY,
+--     card_id INT,
+--     amount DECIMAL(10, 2),
+--     initial_time DATETIME,
+--     finalized_time DATETIME,
+--     status ENUM('pending', 'settled'),
+--     tip DECIMAL(10, 2) DEFAULT 0.00,
+--     FOREIGN KEY (card_id) REFERENCES CreditCards(card_id)
+-- );
+
+
+-- SELECT * FROM CreditCards;
