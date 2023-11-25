@@ -9,15 +9,15 @@
 ## How It Works
 ### User Selection
 [Upon launching the application, users are prompted to select a profile from a MySQL database. This profile selection sets the stage for personalized interaction with the credit card interface.]
-!(https://media.giphy.com/media/s7qxKOIjDuEAaZIiuD/giphy.gif)
+![User Interface](https://media.giphy.com/media/s7qxKOIjDuEAaZIiuD/giphy.gif)
 
 ### Credit Card Interface
 [Once a profile is chosen, the Credit Card Interface appears. This interface is where the credit card information is placed. It accurately represents real-life credit card functionalities.]
-!(https://media.giphy.com/media/s7qxKOIjDuEAaZIiuD/giphy.gif)
+![Credit Interface](https://media.giphy.com/media/s7qxKOIjDuEAaZIiuD/giphy.gif)
 
 ### Shopping Experience
 [Alongside the credit card interface, users are shown items pulled from our items database. This feature simulates a shopping experience, allowing users to make purchases and see the direct effect on their virtual credit card.]
-!(https://media.giphy.com/media/EYELJdDvsQHH5WEyuK/giphy.gif)
+![Interactive Shopping](https://media.giphy.com/media/EYELJdDvsQHH5WEyuK/giphy.gif)
 
 ### Receipt Panel
 [The receipt panel provides users with a view of their transactions.]
