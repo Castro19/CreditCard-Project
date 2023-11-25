@@ -56,8 +56,6 @@ pip install -r requirements.txt
 4. Input the Values located in SQL/DDL
 5. Create config.py in the root directory, as:
 class Config:
-    SECRET_KEY = 'your_secret_key_here'
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://[username]:[password]@localhost/credit_card_simulator'
-    # Add other configuration settings as needed
 
 
