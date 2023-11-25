@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Card Transaction Interface</title>
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+</head>
+<body>
+
+    <div class="main-content">
+        <div class="date-container">
+            <h1>Date Counter</h1>
+            <div id="dateDisplay">
+                1/1/2023
+            </div>
+            <button id="incrementDateButton">Increment Date</button>
+        </div>
+        <div class="user-selection">
+            <h1>Select a User Profile</h1>
+            <div class="profiles-container">
+                <div class="profile" id="user1" onclick="handleUserSelection(1)">
+                    <img src="static/img/profiles/1.JPG" alt="Profile Picture 1">
+                    <p>Jim</p>
+                    <p>Age: 18</p>
+                </div>
+                <div class="profile" id="user2" onclick="handleUserSelection(2)">
+                    <img src="static/img/profiles/2.JPG" alt="Profile Picture 2">
+                    <p>Maria</p>
+                    <p>Age: 25</p>
+                </div>
+                <div class="profile" id="user3" onclick="handleUserSelection(3)">
+                    <img src="static/img/profiles/3.JPG" alt="Profile Picture 3">
+                    <p>Thomas</p>
+                    <p>Age: 55</p>
+                </div>
+                <div class="profile" id="user4" onclick="handleUserSelection(4)">
+                    <img src="static/img/profiles/4.JPG" alt="Profile Picture 4">
+                    <p>Jennifer</p>
+                    <p>Age: 32</p>
+                </div>
+            </div>
+        </div>   
+        <div class="container-Interface">
+            <h2>Credit Card Transaction Interface</h2>
+            <div class="display-section">
+                <div class="credit-info">
+                    <h3>Account Information</h3>
+                    <div class="credit-card-selector">
+                        <label for="creditCardDropdown">Select Credit Card:</label>
+                        <select id="creditCardDropdown" name="creditCards">
+                            <option value="card1">Credit Card 1</option>
+                            <option value="card2">Credit Card 2</option>
+                            <option value="card3">Credit Card 3</option>
+                        </select>
+                    </div>
+                    <img id="userImage" src="" alt="User Image" style="width:100px; height:100px;">
+
+                    <p>Current Credit Score: <span id="CreditScore">$1000.00</span></p>
+                    <p>Total Credit Limit: <span id="totalCreditLimit">$1000.00</span></p>
+                    <p>Available Credit: <span id="availableCredit">$1000.00</span></p>
+                    <p>Payable Balance: <span id="payableBalance">$0.00</span></p>
+                    <button id="submitPayment" type="payment">Submit Payment</button>
+                    <br>
+                    <button id="cancelPayment" type="cancel">Cancel Payment</button>
+                </div>
+                <div class="transactions">
+                    <h3>Pending Transactions</h3>
+                    <ul id="pendingTransactions">
+                        <!-- JS will update this list -->
+                    </ul>
+                </div>
+                <div class="transactions">
+                    <h3>Settled Transactions</h3>
+                    <ul id="settledTransactions">
+                        <!-- JS will update this list -->
+                    </ul>
+                </div>
+            </div>
+        </div>        
+        <form method="POST" onsubmit="submitReceipt(event)">
+            <div class="receipt-container">
+                <h2>Your Receipt</h2>
+                <div id="receipt" class="receipt">
+                    <!-- Dynamically added items will appear here -->
+                </div>
+                <button id="submitReceipt" type="submit">Submit Receipt</button>
+            </div>
+        </form>
+        <!-- Display Section -->
+        <div class="container-items">
+            <div class="item-selection">
+                <h1>Select an Item to Purchase</h1>
+                <div class="items-container" id="dynamic-items">
+                              
+                </div>
+            </div>   
+        </div>     
+    </div>
+    <script src="static/js/app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/9.0.2/bignumber.min.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,285 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #e9ecef;
+    margin: 0;
+    padding: 0;
+    background-image: linear-gradient(to right, #6dd5ed, #2193b0);
+    overflow-x: hidden; /* Prevents scroll on the body */
+}
+
+.main-content {
+    display: flex;
+    flex-direction: column; /* Stacks children vertically */
+    justify-content: flex-start; /* Aligns children to the start of the container */
+    align-items: center; /* Centers horizontally */
+    height: 80vh;
+    text-align: center; /* Centers the text of direct children like h1 */
+    padding-top: 10%; /* Adjust this value as needed to push content down */
+}
+
+/* Centers the title and adds space only if there are profiles below */
+.main-content > h1 {
+    margin-bottom: 20px;
+}
+
+.user-selection, .item-selection {
+    display: flex;
+    flex-direction: column; /* Ensures that the profiles container is below the h1 */
+    width: 100%; /* Full width to center content inside */
+    align-items: center; /* Centers the profiles container horizontally */
+}
+
+.profiles-container, .items-container{
+    display: flex;
+    justify-content: center; /* Aligns items horizontally in the center */
+    gap: 20px; /* Spacing between profile cards */
+    flex-wrap: wrap; /* In case of overflow, it goes to the next line */
+}
+
+/* Individual Profiles */
+.profile {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 200px; /* Fixed width for consistency */
+}
+
+.profile:hover {
+    transform: translateY(-5px); /* Moves the card up slightly */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.profile img {
+    max-width: 100px; /* Adjust if necessary */
+    border-radius: 50%;
+    margin-bottom: 10px; /* Spacing between image and text */
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 80%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Transactions */
+.container-Interface {
+    width: 80%;
+    max-width: 400px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px);
+    transition: opacity 0.5s ease, transform 0.5s ease, visibility 0.5s;
+}
+
+.container-Interface.visible {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+
+.container-items {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px);
+    transition: opacity 0.5s ease, transform 0.5s ease, visibility 0.5s;
+}
+
+.container-items.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+h2 {
+    font-size: 24px;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.display-section {
+    margin-top: 30px;
+}
+
+.credit-info, .transactions {
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.credit-info h3, .transactions h3 {
+    margin-top: 0;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    font-size: 16px;
+    color: #495057;
+    margin-bottom: 5px;
+}
+
+.input-group input[type="number"],
+.input-group select {
+    width: 90%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 16px;
+    color: #495057;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+
+/* Receipt */
+.receipt-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    width: 300px; /* Adjust according to your layout */
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px);
+    transition: opacity 0.5s ease, transform 0.5s ease, visibility 0.5s;
+}
+
+.receipt-container.visible {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.receipt {
+    text-align: left;
+    border: 1px solid #ddd;
+    margin: 20px 0;
+    padding: 10px;
+    height: 150px; /* Adjust as necessary */
+    overflow-y: auto; /* Enables scrolling for overflow */
+}
+
+#submitReceipt, #submitPayment, #cancelPayment {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#submitReceipt:hover {
+    background-color: #0056b3;
+}
+
+#submitPayment {
+    background-color: rgb(30, 172, 22);
+}
+
+#submitPayment:hover {
+    background-color: rgb(1, 135, 28);
+}
+
+#cancelPayment {
+    background-color: rgb(238, 0, 0);;
+}
+
+#cancelPayment:hover {
+    background-color: rgb(184, 0, 0);;
+}
+
+/* Individual Items */
+.item {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 200px; /* Fixed width for consistency */
+}
+
+.item:hover {
+    transform: translateY(-5px); /* Moves the card up slightly */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.item img {
+    max-width: 100px; /* Adjust if necessary */
+    /* border-radius: 50%; */
+    margin-bottom: 10px; /* Spacing between image and text */
+}
+
+.date-container {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px);
+    transition: opacity 0.5s ease, transform 0.5s ease, visibility 0.5s;
+}
+
+.date-container.visible {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+#dateDisplay {
+    margin: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+#dateDisplay.visible {
+    margin: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
