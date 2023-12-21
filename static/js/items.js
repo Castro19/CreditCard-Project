@@ -1,5 +1,5 @@
 // items
-export function selectItem(itemElement) {
+function selectItem(itemElement) {
     // Retrieve item details from data attributes
     const itemName = itemElement.getAttribute('data-name');
     const itemPrice = itemElement.getAttribute('data-price');

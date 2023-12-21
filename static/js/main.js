@@ -1,7 +1,7 @@
 // import { userId } from './global.js';
 import { selectUser, fetchCreditScore } from './user.js';
 import { fetchCreditCards, InitCreditCardDropdown, creditCardsData } from './creditcards.js';
-import { selectItem, loadItems } from './items.js';
+import { loadItems } from './items.js';
 import { incrementDate, submitReceipt, submitPayment } from './transactions.js';
 export let userId;
 

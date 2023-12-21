@@ -1,15 +1,27 @@
 // Credit
 import { userId } from './main.js';
-export let pending_credit= 0; // Submit Payment
-export let pending_balance = 0; // Submit Receipt
+
 export let creditCardsData = [];
 
-export function UpdateCreditCardDetails(cardId) {
-    const selectedCard = creditCardsData.find(card => card.card_id === cardId);
-    // selectedCard.payable_balance = balance;
+export function InitCreditCardDropdown(creditCards) {
+    const dropdown = document.getElementById('creditCardDropdown');
+    dropdown.innerHTML = ''; // Clear existing options
 
-    if (selectedCard) {
-        InitCreditLimitDisplay(selectedCard);
+    creditCards.forEach(card => {
+        const cardNumberStr = new BigNumber(card.card_number).toFixed(0);
+        const lastFourDigits = cardNumberStr.slice(-4);
+        const option = document.createElement('option');
+        option.value = card.card_id; // Use card_id as the value
+        option.textContent = `Card ending in ${lastFourDigits}`;
+        dropdown.appendChild(option);
+    });
+
+    // Set up the event listener for the dropdown change
+    dropdown.addEventListener('change', handleCreditCardSelectionChange);
+
+    // Update details for the first card initially
+    if (creditCards.length > 0) {
+        UpdateCreditCardDetails(creditCards[0].card_id);
     }
 }
 
@@ -36,14 +48,8 @@ export async function fetchCreditCards(selectedCardId = null, userId) {
     }
 }
 
-export function handleCreditCardSelectionChange() {
-    const dropdown = document.getElementById('creditCardDropdown');
-    const selectedCardId = parseInt(dropdown.value);
-    fetchCreditCards(selectedCardId, userId); // Pass the selected card ID
-}
-
 // Helper Function for fetchCreditCards
-export function InitCreditLimitDisplay(card) {
+function InitCreditLimitDisplay(card) {
     let creditLimit = card.credit_limit;
     let availableCredit = card.available_credit; // Assuming available credit equals credit limit for simplicity
     let payableBalance = card.payable_balance;
@@ -54,26 +60,18 @@ export function InitCreditLimitDisplay(card) {
     document.getElementById('payableBalance').textContent = `$${payableBalance.toFixed(2)}`;
 }
 
-export function InitCreditCardDropdown(creditCards) {
-    const dropdown = document.getElementById('creditCardDropdown');
-    dropdown.innerHTML = ''; // Clear existing options
+function UpdateCreditCardDetails(cardId) {
+    const selectedCard = creditCardsData.find(card => card.card_id === cardId);
 
-    creditCards.forEach(card => {
-        const cardNumberStr = new BigNumber(card.card_number).toFixed(0);
-        const lastFourDigits = cardNumberStr.slice(-4);
-        const option = document.createElement('option');
-        option.value = card.card_id; // Use card_id as the value
-        option.textContent = `Card ending in ${lastFourDigits}`;
-        dropdown.appendChild(option);
-    });
-
-    // Set up the event listener for the dropdown change
-    dropdown.addEventListener('change', handleCreditCardSelectionChange);
-
-    // Update details for the first card initially
-    if (creditCards.length > 0) {
-        UpdateCreditCardDetails(creditCards[0].card_id);
+    if (selectedCard) {
+        InitCreditLimitDisplay(selectedCard);
     }
+}
+
+export function handleCreditCardSelectionChange() {
+    const dropdown = document.getElementById('creditCardDropdown');
+    const selectedCardId = parseInt(dropdown.value);
+    fetchCreditCards(selectedCardId, userId); // Pass the selected card ID
 }
 
 // creditcards functions: UpdateCreditCardDetails, fetchCreditCards, handleCreditCardSelectionChange, InitCreditLimitDisplay, InitCreditCardDropdown

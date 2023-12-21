@@ -1,8 +1,8 @@
 // import { current_date } from './global.js';
 import { userId } from './main.js';
-import { creditCardsData, handleCreditCardSelectionChange } from './creditcards.js';
-export let pending_transactions = [];
-export let current_date = new Date('2023-1-1');
+import { handleCreditCardSelectionChange } from './creditcards.js';
+let pending_transactions = [];
+let current_date = new Date('2023-1-1');
 
 // by assigning each card an id alongside its value that I can quickl
 export async function submitReceipt(event) {
@@ -45,7 +45,7 @@ export async function submitReceipt(event) {
     }
 }
 
-export function updatePendingTransactionsUI(data) {
+function updatePendingTransactionsUI(data) {
     console.log(data);
     let tx = data.pending_transactions; // This is an object, not an array
 
@@ -99,7 +99,7 @@ export async function incrementDate() {
     }
 }
 
-export function updateUIAfterFinalization(data) {
+function updateUIAfterFinalization(data) {
     const finalizedTransactions = data['finalized_transactions'];
     console.log(pending_transactions);
     console.log(finalizedTransactions);
@@ -121,7 +121,7 @@ export function updateUIAfterFinalization(data) {
 }
 
 // Function to clear the receipt
-export function clearReceipt() {
+function clearReceipt() {
     const receiptDiv = document.getElementById("receipt");
     while (receiptDiv.firstChild) {
         receiptDiv.removeChild(receiptDiv.firstChild);
@@ -176,21 +176,6 @@ export async function submitPayment(event) {
     } catch (error) {
         console.error('Submit Payment Error:', error);
     }
-    // fetch('/payments', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify(jsonData)
-    // })
-    // .then(response => response.json())
-    // .then(data => {
-    //     console.log(data);
-    //     updatePendingTransactionsUI(data);
-    // })
-    // .catch(error => {
-    //     console.error('Error:', error);
-    // });
 }
 
 // transactions Functions: incrementDate, updateUIAfterFinalization, submitReceipt, clearReceipt, updatePendingTransactionsUI, submitPayment
