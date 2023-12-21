@@ -14,7 +14,7 @@ def home():
     return render_template('index.html')
 
 # Get the Users from the DataBase
-@app.route('/get-users')
+@app.route('/users', methods=['GET'])
 def get_users():
     users = Users.query.all()
     users_data = []
@@ -29,7 +29,7 @@ def get_users():
     return jsonify(users_data)
 
 # Get the Credit Score from the User
-@app.route('/get-credit-score/<int:user_id>')
+@app.route('/credit-score/<int:user_id>', methods=['GET'])
 def get_credit_score(user_id):
     print(f"Fetching credit score for user ID: {user_id}")
     user = Users.query.filter_by(user_id=user_id).first()
@@ -41,7 +41,7 @@ def get_credit_score(user_id):
         return jsonify({'error': 'User not found'}), 404
 
 
-@app.route('/get-credit-cards/<int:user_id>')
+@app.route('/credit-cards/<int:user_id>', methods=['GET'])
 def get_credit_cards(user_id):
     credit_cards = CreditCard.query.filter_by(user_id=user_id).all()
     credit_card_data = [
@@ -57,7 +57,7 @@ def get_credit_cards(user_id):
     print(credit_card_data)
     return jsonify(credit_card_data)
 
-@app.route('/get-items')
+@app.route('/items', methods=['GET'])
 def get_items():
     print(f"Fetching Items")
     items = Item.query.all()
@@ -71,22 +71,18 @@ def get_items():
     print(items_list)
     return jsonify(items_list)
     
-
-@app.route('/submit', methods=['POST'])
-def submit():
+@app.route('/transactions/authorize', methods=['POST'])
+def transactions_authorize():
     print("Submit route was called.")
     data = request.json
     user_id = data.get('user', 0)
     card_id = data.get('card_id', 0)
     current_date_str = data.get('current_date', '')
     # Convert the string to a datetime object
-    # Convert the string to a datetime object
     current_date_obj = datetime.strptime(current_date_str, '%m/%d/%Y')
 
     # Format to a date-only string (YYYY-MM-DD format)
     date_only_str = current_date_obj.strftime('%Y-%m-%d')
-
-    pending_balance = decimal.Decimal(data.get('pending_balance', 0))
 
     items = data.get('items', [])
     
@@ -98,8 +94,6 @@ def submit():
         credit_card = CreditCard.query.filter_by(card_id=card_id, user_id=user_id).first()
         if credit_card:
             credit_card.available_credit -= total  # Update the available credit
-            pending_balance += total
-
             db.session.commit()
         else:
             return jsonify({"error": "Credit card not found"}), 404
@@ -108,6 +102,7 @@ def submit():
         print("An error occurred:", str(e))
         return jsonify({"error": str(e)}), 500
 
+    # Create a new Pending Transaction for Authorization
     try:
         new_transaction = Transaction(
             card_id=card_id,
@@ -132,14 +127,13 @@ def submit():
     updated_info = {
         "card_id": card_id,
         "available_credit": credit_card.available_credit,
-        "pending_balance": pending_balance,
         "pending_transactions": pending_transactions
     }
 
     print("HERE:", str(updated_info))
     return jsonify(updated_info)
 
-@app.route('/submit_payment', methods=['POST'])
+@app.route('/payments', methods=['POST'])
 def submit_payment():
     data = request.json
     user_id = data.get('user', 0)
@@ -151,18 +145,12 @@ def submit_payment():
 
     print(date_only_str)
     payment_amount = float(data.get('payment_amount', 0)) * -1 # Negative Num
-    pending_credit = float(data.get('pending_credit', 0))
-
-    payable_balance = float(data.get('payable_balance', 0))
-
-    payable_balance += payment_amount
-    pending_credit += payment_amount
 
     # Update the credit card records in the database
     try:
         credit_card = CreditCard.query.filter_by(card_id=card_id, user_id=user_id).first()
         if credit_card:
-            credit_card.balance = payable_balance  # Update the paybale balance, but the available credit takes time to load.
+            credit_card.balance += decimal.Decimal(payment_amount) # Update the paybale balance, but the available credit takes time to load.
             db.session.commit()
         else:
             return jsonify({"error": "Credit card not found"}), 404
@@ -170,9 +158,7 @@ def submit_payment():
         db.session.rollback()
         print("An error occurred:", str(e))
         return jsonify({"error": str(e)}), 500       
-    # Process the payment logic here
-    # For example, updating available credit and payable balance
-
+    
     # Pending transactions data
     try:
         new_transaction = Transaction(
@@ -188,18 +174,15 @@ def submit_payment():
         print("An error occurred while inserting transactions:", str(e))
         return jsonify({"error": str(e)}), 500
 
-
     formatted_transactions = {
         "id": new_transaction.transaction_id,
         "amount": new_transaction.amount, 
         "time": date_only_str
     }
-
     
     updated_info = {
         "card_id": card_id,
-        "pending_credit": pending_credit,
-        "payable_balance": payable_balance,
+        "payable_balance": credit_card.balance,
         "pending_transactions": formatted_transactions
     }
     
@@ -207,70 +190,70 @@ def submit_payment():
 
     return jsonify(updated_info)
 
-from flask import jsonify
-
-@app.route('/finalize_transactions', methods=['POST'])
+@app.route('/transactions-settle', methods=['POST'])
 def finalize_transactions():
     data = request.json
     user_id = data.get('user', 0)
-    card_id = data.get('card_id', 0)
-    # Finalaize the Pending Balance in Credit Card:
-    pending_balance = decimal.Decimal(data.get('pending_balance', 0))
-    pending_credit = decimal.Decimal(data.get('pending_credit', 0))
+    pending_transactions = data.get('pendingTransactions')
 
-     # Update the credit card records in the database
+    print(f"PENDING: {pending_transactions}")
+
     try:
-        credit_card = CreditCard.query.filter_by(card_id=card_id, user_id=user_id).first()
-        if credit_card:
-            credit_card.balance += pending_balance  # Update the paybale balance
-            credit_card.available_credit -= pending_credit
-            db.session.commit()
-        else:
-            return jsonify({"error": "Credit card not found"}), 404
-        
+        for pending_transaction in pending_transactions:
+            transaction_id = pending_transaction['id']
+            
+            # Find the transaction in the database
+            transaction = Transaction.query.filter_by(transaction_id=transaction_id, status='pending').first()
+            if transaction:
+                # Retrieve the card_id from the transaction
+                card_id = transaction.card_id
+
+                # Get the Date:
+                current_date_str = data.get('current_date', '')
+                current_date_obj = datetime.strptime(current_date_str, '%m/%d/%Y')
+                date_only_str = current_date_obj.strftime('%Y-%m-%d')
+
+                # Find the associated credit card
+                credit_card = CreditCard.query.filter_by(card_id=card_id, user_id=user_id).first()
+                if credit_card:
+                    transaction.status = 'settled'  # Update transaction status
+                    transaction.finalized_time = date_only_str  # Set finalized time
+                    if transaction.amount > 0:
+                        # Increase the balance of the credit card
+                        credit_card.balance += transaction.amount
+                    else:
+                        credit_card.available_credit -= transaction.amount
+                else:
+                    print(f"Credit card with ID {card_id} not found.")
+                    continue
+            else:
+                print(f"Transaction ID {transaction_id} not found or not in pending state.")
+                continue
+
+        db.session.commit()
+
     except Exception as e:
         db.session.rollback()
         print("An error occurred:", str(e))
         return jsonify({"error": str(e)}), 500     
-    
-    current_date_str = data.get('current_date', '')
-    # Convert the string to a datetime object
-    current_date_obj = datetime.strptime(current_date_str, '%m/%d/%Y')
-    date_only_str = current_date_obj.strftime('%Y-%m-%d')
 
-    # Assuming you have a way to finalize transactions in your database
-    try:
-        pending_transactions = Transaction.query.filter_by(status='pending').all()
-        for txn in pending_transactions:
-            txn.status = 'settled'
-            txn.finalized_time = date_only_str
-            # Set finalized_time or any other necessary fields here
-
-        db.session.commit()
-
-        payable_balance = credit_card.balance
-        available_credit = credit_card.available_credit
-
-        # Format the finalized transactions for response
-        finalized_transactions = [
+    # Prepare the response
+    updated_info = {
+        "finalized_transactions": [
             {"id": txn.transaction_id,
-              "amount": txn.amount, 
-              "initial_time": txn.initial_time.strftime('%Y-%m-%d'),
-              "finalized_time": date_only_str
-
-              }
-            for txn in pending_transactions
-        ]   
-        print(finalized_transactions)
-        updated_info = {
-            "finalized_transactions": finalized_transactions,
-            "payable_balance": payable_balance,
-            "available_credit": available_credit
-        }
-        return jsonify(updated_info)
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"error": str(e)}), 500
+             "amount": txn.amount, 
+             "initial_time": txn.initial_time.strftime('%Y-%m-%d'),
+             "finalized_time": txn.finalized_time.strftime('%Y-%m-%d')
+             }
+            for txn in Transaction.query.filter_by(status='settled').all()
+        ],
+        "payable_balances": [
+            {"card_id": cc.card_id, "balance": cc.balance}
+            for cc in CreditCard.query.filter_by(user_id=user_id).all()
+        ]
+    }
+    print(f"UPDATED INFO: {updated_info}")
+    return jsonify(updated_info)
 
 
 # @app.route('/process-data', methods=['POST'])

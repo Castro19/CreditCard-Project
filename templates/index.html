@@ -20,22 +20,22 @@
         <div class="user-selection">
             <h1>Select a User Profile</h1>
             <div class="profiles-container">
-                <div class="profile" id="user1" onclick="handleUserSelection(1)">
+                <div class="profile" id="user1" data-user-id="1">
                     <img src="static/img/profiles/1.JPG" alt="Profile Picture 1">
                     <p>Jim</p>
                     <p>Age: 18</p>
                 </div>
-                <div class="profile" id="user2" onclick="handleUserSelection(2)">
+                <div class="profile" id="user2" data-user-id="2">
                     <img src="static/img/profiles/2.JPG" alt="Profile Picture 2">
                     <p>Maria</p>
                     <p>Age: 25</p>
                 </div>
-                <div class="profile" id="user3" onclick="handleUserSelection(3)">
+                <div class="profile" id="user3" data-user-id="3">
                     <img src="static/img/profiles/3.JPG" alt="Profile Picture 3">
                     <p>Thomas</p>
                     <p>Age: 55</p>
                 </div>
-                <div class="profile" id="user4" onclick="handleUserSelection(4)">
+                <div class="profile" id="user4" data-user-id="4">
                     <img src="static/img/profiles/4.JPG" alt="Profile Picture 4">
                     <p>Jennifer</p>
                     <p>Age: 32</p>
@@ -63,7 +63,7 @@
                     <p>Payable Balance: <span id="payableBalance">$0.00</span></p>
                     <button id="submitPayment" type="payment">Submit Payment</button>
                     <br>
-                    <button id="cancelPayment" type="cancel">Cancel Payment</button>
+
                 </div>
                 <div class="transactions">
                     <h3>Pending Transactions</h3>
@@ -79,7 +79,7 @@
                 </div>
             </div>
         </div>        
-        <form method="POST" onsubmit="submitReceipt(event)">
+        <form method="POST">
             <div class="receipt-container">
                 <h2>Your Receipt</h2>
                 <div id="receipt" class="receipt">
@@ -98,7 +98,7 @@
             </div>   
         </div>     
     </div>
-    <script src="static/js/app.js"></script>
+    <script type="module" src="static/js/main.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/9.0.2/bignumber.min.js"></script>
 </body>
 </html>
