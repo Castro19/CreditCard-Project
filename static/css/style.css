@@ -198,7 +198,7 @@ button:hover {
     overflow-y: auto; /* Enables scrolling for overflow */
 }
 
-#submitReceipt, #submitPayment, #cancelPayment {
+#submitReceipt, #submitPayment, #cancelPayment, #clearAuth {
     width: 100%;
     padding: 10px;
     background-color: #007bff;
@@ -233,6 +233,15 @@ button:hover {
 #cancelPayment:hover {
     background-color: rgb(184, 0, 0);;
 }
+
+ #clearAuth {
+    background-color: rgb(255, 145, 49);;
+}
+
+#clearAuth:hover {
+    background-color: rgb(184, 123, 0);;
+}
+
 
 /* Individual Items */
 .item {

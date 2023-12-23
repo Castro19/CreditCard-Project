@@ -182,26 +182,36 @@ export async function submitPayment(event) {
     }
 }
 
-export async function cancelPayment(event) {
+export async function cancelItem(event) {
     console.log(pending_transactions);
 
-    const payments = pending_transactions.filter(item => parseFloat(item.amount) < 0);
+    console.log(event.target.id);
+    var items;
+    if (event.target.id === 'cancelPayment') {
+        items = pending_transactions.filter(item => parseFloat(item.amount) < 0);
+    } else {
+        items = pending_transactions.filter(item => parseFloat(item.amount) >= 0);
+    }
 
-    console.log(payments);
-    CancelPaymentPopups(payments, async function(cancel_payments) {
-        console.log(cancel_payments);
-        if (cancel_payments.length > 0) {
-            await cancelPaymentsAPI(cancel_payments);
+    console.log(items);
+    ItemPopups(items, async function(cancel_items) {
+        console.log(cancel_items);
+        if (cancel_items.length > 0) {
+            if (event.target.id === 'cancelPayment') {
+                await cancelPaymentsAPI(cancel_items);
+            }  else {
+                await cancelTransactions(cancel_items);
+            }
             // Remove selected payments from pending_transactions
-            removeSelectedPayments(cancel_payments);
+            removeSelectedItems(cancel_items);
         }
         
     });
 
-    function CancelPaymentPopups(data, callback) {
+    function ItemPopups(data, callback) {
         var buttonsContainer = document.getElementById('buttonsContainer');
         buttonsContainer.innerHTML = ''; // Clear existing content
-        var cancel_payments = [];
+        var cancel_items = [];
     
         // Creating the Pending Payment Buttons
         data.forEach(item => {
@@ -210,8 +220,8 @@ export async function cancelPayment(event) {
             button.onclick = function() {
                 console.log(`Button for ID ${item.id} clicked`);
                 this.classList.add('clicked-style'); // Add the class on click
-                if (!cancel_payments.includes(item)) {
-                    cancel_payments.push(item);
+                if (!cancel_items.includes(item)) {
+                    cancel_items.push(item);
                 }
             };
             buttonsContainer.appendChild(button);
@@ -222,7 +232,7 @@ export async function cancelPayment(event) {
         confirmButton.textContent = 'Confirm';
         confirmButton.onclick = function() {
             popupWindow.style.display = 'none';
-            callback(cancel_payments);
+            callback(cancel_items);
         };
         buttonsContainer.appendChild(confirmButton);
     
@@ -247,7 +257,7 @@ export async function cancelPayment(event) {
 }
 
 // Function to remove selected payments from pending_transactions
-function removeSelectedPayments(selectedPayments) {
+function removeSelectedItems(selectedPayments) {
     const pendingTransactionsElement = document.getElementById('pendingTransactions');
 
     selectedPayments.forEach(payment => {
@@ -268,6 +278,27 @@ function removeSelectedPayments(selectedPayments) {
 
 }
 
+async function cancelTransactions(clear_transactions) {
+    current_date.getDate()
+    console.log(current_date);
+    let jsonData = {
+        user: userId,
+        clear_transactions: clear_transactions,
+        current_date: current_date.toLocaleDateString()
+    };
+    
+    try {
+        const response = await fetch('/clear', {
+            method: 'POST',
+            headers :{'Content-Type': 'application/json' },
+            body: JSON.stringify(jsonData)
+        });
+        const data = await response.json();
+        console.log(data)
+    } catch (error) {
+        console.error('Cancel Payment Error:', error);
+    }
+}
 
 async function cancelPaymentsAPI(cancel_payments) {
     current_date.getDate()
