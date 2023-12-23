@@ -312,12 +312,12 @@ def cancel_payment():
 def clear_auth():
     data = request.json
     user_id = data.get('user', 0)
-    payments = data.get('clear_transactions')
+    transactions = data.get('clear_transactions')
     
     print(f"CLEAR DATA: {data}")
     try:
-        for payment in payments:
-            transaction_id = payment['id']
+        for transaction in transactions:
+            transaction_id = transaction['id']
             # Find the transaction in the database
             transaction = Transaction.query.filter_by(transaction_id=transaction_id, status='pending').first()
 
@@ -346,7 +346,7 @@ def clear_auth():
 
     except Exception as e:
         db.session.rollback()
-        print("An error occurred during cancel payment", str(e))
+        print("An error occurred during Transaction Clear", str(e))
         return jsonify({"error": str(e)}), 500
 
     # Prepare the Response:
