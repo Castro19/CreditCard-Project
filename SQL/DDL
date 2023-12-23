@@ -25,14 +25,13 @@ USE credit_db;
 --     price DECIMAL(10, 2)
 -- );
 
-
 -- CREATE TABLE Transactions (
 --     transaction_id INT AUTO_INCREMENT PRIMARY KEY,
 --     card_id INT,
 --     amount DECIMAL(10, 2),
 --     initial_time DATETIME,
 --     finalized_time DATETIME,
---     status ENUM('pending', 'settled'),
+--     status ENUM('pending', 'settled', 'cleared', 'canceled'),
 --     tip DECIMAL(10, 2) DEFAULT 0.00,
 --     FOREIGN KEY (card_id) REFERENCES CreditCards(card_id)
 -- );

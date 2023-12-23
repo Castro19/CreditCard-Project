@@ -56,14 +56,19 @@
                         </select>
                     </div>
                     <img id="userImage" src="" alt="User Image" style="width:100px; height:100px;">
-
                     <p>Current Credit Score: <span id="CreditScore">$1000.00</span></p>
                     <p>Total Credit Limit: <span id="totalCreditLimit">$1000.00</span></p>
                     <p>Available Credit: <span id="availableCredit">$1000.00</span></p>
                     <p>Payable Balance: <span id="payableBalance">$0.00</span></p>
                     <button id="submitPayment" type="payment">Submit Payment</button>
+                    <button id="cancelPayment" type="cancel">Cancel a Payment</button>
                     <br>
-
+                </div>
+                <div id="popupWindow" class="popup">
+                    <div class="popup-content">
+                        <span class="close-btn">&times;</span>
+                        <div id="buttonsContainer"></div>
+                    </div>
                 </div>
                 <div class="transactions">
                     <h3>Pending Transactions</h3>

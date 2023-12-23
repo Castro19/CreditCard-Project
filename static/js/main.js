@@ -2,7 +2,7 @@
 import { selectUser, fetchCreditScore } from './user.js';
 import { fetchCreditCards, InitCreditCardDropdown, creditCardsData } from './creditcards.js';
 import { loadItems } from './items.js';
-import { incrementDate, submitReceipt, submitPayment } from './transactions.js';
+import { incrementDate, submitReceipt, submitPayment, cancelPayment } from './transactions.js';
 export let userId;
 
 // When the Page Reloads, Reset the DataBase to gain new values
@@ -47,6 +47,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 document.getElementById('submitPayment').addEventListener('click', submitPayment);
+
+document.getElementById('cancelPayment').addEventListener('click', cancelPayment);
+
 
 // The incrementDate, submitReceipt, and submitPayment functions will now be imported from the respective modules.
 

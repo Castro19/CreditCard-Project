@@ -42,7 +42,7 @@ class Transaction(db.Model):
     amount = db.Column(db.Numeric(10, 2))
     initial_time = db.Column(db.DateTime, default=datetime.utcnow)
     finalized_time = db.Column(db.DateTime)
-    status = db.Column(db.Enum('pending', 'settled'))
+    status = db.Column(db.Enum('pending', 'settled', 'clear', 'canceled'))
     tip = db.Column(db.Numeric(10, 2), default=0.00)
 
     def __repr__(self):

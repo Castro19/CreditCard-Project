@@ -47,23 +47,29 @@ export async function submitReceipt(event) {
 
 function updatePendingTransactionsUI(data) {
     console.log(data);
-    let tx = data.pending_transactions; // This is an object, not an array
+    let transactions = data.pending_transactions; // Can be an object or an array
+    let pendingTransactionsElement = document.getElementById('pendingTransactions');
 
-    let pendingTransactions = document.getElementById('pendingTransactions');
+    // Function to create and append a transaction item
+    function appendTransaction(tx) {
+        let type = parseFloat(tx.amount) < 0 ? 'Payment' : 'Purchase';
+        let amount = parseFloat(tx.amount) < 0 ? `-$${Math.abs(parseFloat(tx.amount))}` : `$${tx.amount}`;
 
-    // Check and format transaction
-    let type, amount;
-    if (tx.amount < 0) {
-        type = 'Payment';
-        amount = `-$${Math.abs(tx.amount)}`;
-    } else {
-        type = 'Purchase';
-        amount = `$${tx.amount}`;
+        let li = document.createElement('li');
+        li.id = `transaction-${tx.id}`; // Assign unique ID based on transaction ID
+        li.textContent = `${type} ${tx.id}: ${amount} @ date: ${tx.time}`;
+        pendingTransactionsElement.appendChild(li);
     }
+
+    // If transactions is a single object, convert it to an array
+    if (!Array.isArray(transactions)) {
+        transactions = [transactions];
+    }
+
+    // Append each transaction to the UI
+    transactions.forEach(appendTransaction);
+
     handleCreditCardSelectionChange();
-    let li = document.createElement('li');
-    li.textContent = `${type} ${tx.id}: ${amount} @ date: ${tx.time}`;
-    pendingTransactions.appendChild(li);
 }
 
 export async function incrementDate() {
@@ -71,15 +77,12 @@ export async function incrementDate() {
     
     document.getElementById('dateDisplay').innerText = current_date.toLocaleDateString();
 
-    console.log(pending_transactions);
-    const dropdown = document.getElementById('creditCardDropdown');
-    const card_id = parseInt(dropdown.value); // This now holds the card_id
-    
+    // console.log(pending_transactions);
+
     let jsonData = {
         user: userId,
-        card_id: card_id,
         pendingTransactions: pending_transactions, 
-        current_date: current_date.toLocaleDateString(), // FIX to have web date
+        current_date: current_date.toLocaleDateString(), 
     };
 
     try {
@@ -111,11 +114,16 @@ function updateUIAfterFinalization(data) {
     settledTransactions.innerHTML = ''; // Clear the existing list
 
     handleCreditCardSelectionChange();
-
+    console.log(finalizedTransactions)
     // Loop through and set all finalized transactions in correct format
     finalizedTransactions.forEach(tx => {
         let li = document.createElement('li');
-        li.textContent = `Transaction ${tx.id}: $${tx.amount} finalized on date ${tx.finalized_time}`;
+        if (tx.amount >= 0) {
+            var type = "Transaction";
+        } else {
+            var type = "Payment";
+        }
+        li.textContent = `${type} ${tx.id}: $${tx.amount} finalized on date ${tx.finalized_time}`;
         settledTransactions.appendChild(li); // Append to the settled transactions list
     });
 }
@@ -129,8 +137,6 @@ function clearReceipt() {
 }
 
 export async function submitPayment(event) {
-    // LEARN: What does this do?
-    event.preventDefault(); // Prevent the default action
     let dateString = current_date.toLocaleDateString();
     // Prompt the user with the payment amount
     let paymentAmount = prompt("Enter the payment amount:", "");
@@ -156,10 +162,8 @@ export async function submitPayment(event) {
     let jsonData = {
         user: userId,
         card_id: card_id,
-        // pendining_credit: pending_credit,
         current_date: dateString,
         payment_amount: paymentAmount,
-        // available_credit: available_credit,
     };
 
     try {
@@ -178,5 +182,113 @@ export async function submitPayment(event) {
     }
 }
 
+export async function cancelPayment(event) {
+    console.log(pending_transactions);
+
+    const payments = pending_transactions.filter(item => parseFloat(item.amount) < 0);
+
+    console.log(payments);
+    CancelPaymentPopups(payments, async function(cancel_payments) {
+        console.log(cancel_payments);
+        if (cancel_payments.length > 0) {
+            await cancelPaymentsAPI(cancel_payments);
+            // Remove selected payments from pending_transactions
+            removeSelectedPayments(cancel_payments);
+        }
+        
+    });
+
+    function CancelPaymentPopups(data, callback) {
+        var buttonsContainer = document.getElementById('buttonsContainer');
+        buttonsContainer.innerHTML = ''; // Clear existing content
+        var cancel_payments = [];
+    
+        // Creating the Pending Payment Buttons
+        data.forEach(item => {
+            var button = document.createElement('button');
+            button.textContent = `ID: ${item.id}, Amount: ${item.amount}`;
+            button.onclick = function() {
+                console.log(`Button for ID ${item.id} clicked`);
+                this.classList.add('clicked-style'); // Add the class on click
+                if (!cancel_payments.includes(item)) {
+                    cancel_payments.push(item);
+                }
+            };
+            buttonsContainer.appendChild(button);
+        });
+    
+        // Creating the Confirm Button
+        var confirmButton = document.createElement('button');
+        confirmButton.textContent = 'Confirm';
+        confirmButton.onclick = function() {
+            popupWindow.style.display = 'none';
+            callback(cancel_payments);
+        };
+        buttonsContainer.appendChild(confirmButton);
+    
+        var popupWindow = document.getElementById('popupWindow');
+    
+        // Open the popup
+        popupWindow.style.display = 'block';
+    
+        // Close button event handler
+        var closeBtn = document.getElementsByClassName('close-btn')[0];
+        closeBtn.onclick = function() {
+            popupWindow.style.display = 'none';
+        };
+    
+        // Click outside to close
+        window.onclick = function(event) {
+            if (event.target === popupWindow) {
+                popupWindow.style.display = 'none';
+            }
+        };
+    }
+}
+
+// Function to remove selected payments from pending_transactions
+function removeSelectedPayments(selectedPayments) {
+    const pendingTransactionsElement = document.getElementById('pendingTransactions');
+
+    selectedPayments.forEach(payment => {
+        const index = pending_transactions.findIndex(p => p.id === payment.id);
+        if (index !== -1) {
+            // Remove from pending_transactions array
+            pending_transactions.splice(index, 1);
+
+            // Remove from UI
+            const elementToRemove = document.getElementById(`transaction-${payment.id}`);
+            if (elementToRemove) {
+                pendingTransactionsElement.removeChild(elementToRemove);
+            }
+        }
+    });
+    console.log('Updated pending_transactions:', pending_transactions);
+    handleCreditCardSelectionChange();
+
+}
+
+
+async function cancelPaymentsAPI(cancel_payments) {
+    current_date.getDate()
+    console.log(current_date);
+    let jsonData = {
+        user: userId,
+        cancel_payments: cancel_payments,
+        current_date: current_date.toLocaleDateString()
+    };
+    
+    try {
+        const response = await fetch('/cancel-payment', {
+            method: 'POST',
+            headers :{'Content-Type': 'application/json' },
+            body: JSON.stringify(jsonData)
+        });
+        const data = await response.json();
+        console.log(data)
+    } catch (error) {
+        console.error('Cancel Payment Error:', error);
+    }
+}
 // transactions Functions: incrementDate, updateUIAfterFinalization, submitReceipt, clearReceipt, updatePendingTransactionsUI, submitPayment
 // Global Vars: pending_transactions

@@ -204,6 +204,7 @@ def finalize_transactions():
             
             # Find the transaction in the database
             transaction = Transaction.query.filter_by(transaction_id=transaction_id, status='pending').first()
+            # Check the transaction exists
             if transaction:
                 # Retrieve the card_id from the transaction
                 card_id = transaction.card_id
@@ -255,10 +256,53 @@ def finalize_transactions():
     print(f"UPDATED INFO: {updated_info}")
     return jsonify(updated_info)
 
+@app.route('/cancel-payment', methods=['POST'])
+def cancel_payment():
+    data = request.json
+    user_id = data.get('user', 0)
+    payments = data.get('cancel_payments')
+    
+    try:
+        for payment in payments:
+            transaction_id = payment['id']
+            # Find the transaction in the database
+            transaction = Transaction.query.filter_by(transaction_id=transaction_id, status='pending').first()
 
-# @app.route('/process-data', methods=['POST'])
-# def process_data():
-#     inputJSON = request.data
-#     summary = summarize(inputJSON)
-#     return jsonify(summary)
+            if transaction:
+                # Get the Date of Cancellation:
+                current_date_str = data.get('current_date', '')
+                current_date_obj = datetime.strptime(current_date_str, '%m/%d/%Y')
+                date_only_str = current_date_obj.strftime('%Y-%m-%d')
+                print(f"CANCELED DATE: {current_date_str}")
 
+                # Find the associated credit card
+                card_id = transaction.card_id
+                credit_card = CreditCard.query.filter_by(card_id=card_id, user_id=user_id).first()
+                if credit_card:
+                    transaction.status = 'canceled'
+                    transaction.finalized_time = date_only_str  # Set finalized time
+                    credit_card.balance -= transaction.amount
+                else:
+                    print(f"Credit card with ID {card_id} not found.")
+                    continue
+            else:
+                print(f"Transaction ID {transaction_id} not found or not in pending state.")
+                continue
+
+        db.session.commit()
+
+    except Exception as e:
+        db.session.rollback()
+        print("An error occurred during cancel payment", str(e))
+        return jsonify({"error": str(e)}), 500
+
+    # Prepare the Response:
+    updated_info = {
+        "payable_balances": [
+            {"card_id": cc.card_id, "balance": cc.balance}
+            for cc in CreditCard.query.filter_by(user_id=user_id).all()
+        ]
+    }
+    print(f"CANCEL WORKING!!! {updated_info}")
+
+    return updated_info
